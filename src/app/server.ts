@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 import { Server } from "http";
 import app, { port } from "./app";
 import mongoose from "mongoose";
 import { envVars } from "./config/envVars";
-const uri =
-  "mongodb://todosForPractise:Lr0TPXK9UQd2MWTm@ac-ablksvv-shard-00-00.mf78gev.mongodb.net:27017,ac-ablksvv-shard-00-01.mf78gev.mongodb.net:27017,ac-ablksvv-shard-00-02.mf78gev.mongodb.net:27017/?ssl=true&replicaSet=atlas-nfj8ji-shard-0&authSource=admin&appName=Cluster0";
+import { createSuperAdmin } from "./utils/createSuperAdmin";
 
 export const client = new MongoClient(envVars.DB_URL as string, {
   serverApi: {
@@ -23,7 +23,11 @@ const bootstrap = async () => {
     console.log(`Server running on port ${port}`);
   });
 };
-bootstrap();
+(async () => {
+  await bootstrap();
+  await createSuperAdmin();
+})();
+
 process.on("unhandledRejection", (err: any) => {
   console.log("server gracefully shut down for unhandledRejection", err);
   if (server) {
@@ -33,6 +37,7 @@ process.on("unhandledRejection", (err: any) => {
   }
   process.exit(1);
 });
+
 process.on("uncaughtException", (err: any) => {
   console.log("server gracefully shut down for uncaughtException", err);
   if (server) {

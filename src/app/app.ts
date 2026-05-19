@@ -3,7 +3,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import router from "./routes/route";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 const app: Application = express();
-export const port = 3000;
+export const port = 4000;
 app.use(express.json());
 
 app.use("/api/v1/", router);
